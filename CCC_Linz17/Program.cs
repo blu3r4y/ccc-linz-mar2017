@@ -12,25 +12,36 @@ namespace CCC_Linz17
     internal class Program
     {
         public static string DataPath = @"C:\data\Dropbox\Projekte\Code\CCC_Linz17\Data\";
-        public static string LevelPath = Path.Combine(DataPath, @"level1\");
+        public static string LevelPath = Path.Combine(DataPath, @"level2\");
 
         static void Main(string[] args)
         {
-            Console.WriteLine("level1-1:" + doLevel1("level1-1.txt"));
-            Console.WriteLine("level1-2:" + doLevel1("level1-2.txt"));
-            Console.WriteLine("level1-3:" + doLevel1("level1-3.txt"));
-            Console.WriteLine("level1-4:" + doLevel1("level1-4.txt"));
+            Console.WriteLine("1:" + doLevel2("level2-1.txt"));
+            Console.WriteLine("2:" + doLevel2("level2-2.txt"));
+            Console.WriteLine("3:" + doLevel2("level2-3.txt"));
+            Console.WriteLine("4:" + doLevel2("level2-4.txt"));
             Console.Read();
         }
 
-        static int doLevel1(string fileName)
+        static int doLevel2(string fileName)
         {
-            var data = InputReader.Read(Path.Combine(LevelPath, fileName));
+            var data = Utils.Read(Path.Combine(LevelPath, fileName));
 
-            Tuple<Location, Location> fromTo = data.Item2;
-            int traveltime = fromTo.Item1.TravelTimeToWithoutStops(fromTo.Item2) + 200;
+            List<Location> locations = data.Item1;
+            Tuple<Location, Location> journey = data.Item2;
+            Tuple<Location, Location> connection = data.Item3;
 
-            return traveltime;
+            Location closestStart = Location.ClosestTo(journey.Item1,
+                new List<Location> {connection.Item1, connection.Item2});
+            Location closestEnd = closestStart == connection.Item1 ? connection.Item2 : connection.Item1;
+
+            double walktime1 = journey.Item1.TravelTimeTo(closestStart, Location.SpeedWalk);
+            double traveltime = closestStart.TravelTimeToWithStops(closestEnd, Location.SpeedHyperloop);
+            double walktime2 = closestEnd.TravelTimeTo(journey.Item2, Location.SpeedWalk);
+
+            int result = Utils.RoundNearest(walktime1 + walktime2 + traveltime);
+
+            return result;
         }
     }
 }

@@ -10,38 +10,68 @@ namespace CCC_Linz17
 {
     public static class Utils
     {
-        public static Tuple<List<Location>, Tuple<Location, Location>> Read(string path)
+        public static Tuple<List<Location>, Tuple<Location, Location>, Tuple<Location, Location>> Read(string path)
         {
-            var list = new List<Location>();
+            int i = 0;
 
-            string[] lines = File.ReadAllLines(path);
-            int num = int.Parse(lines[0]);
+            string[] totalLines = File.ReadAllLines(path);
+            int numLocations = int.Parse(totalLines[i]);
 
+            i++;
+            
             // read locations
-            for (var i = 1; i < lines.Length - 1; i++)
+            var locations = new List<Location>();
+            for (int j = i; j < i + numLocations; j++)
             {
-                string line = lines[i];
+                string line = totalLines[j];
                 string[] splitted = line.Split(' ');
 
                 string name = splitted[0];
                 int x = int.Parse(splitted[1]);
                 int y = int.Parse(splitted[2]);
 
-                list.Add(new Location(name, new Point2D(x, y)));
+                locations.Add(new Location(name, new Point2D(x, y)));
             }
 
-            // read to, from
-            string[] tofrom = lines[lines.Length - 1].Split(' ');
-            Location to = list.Find(l => l.Name == tofrom[0]);
-            Location from = list.Find(l => l.Name == tofrom[1]);
+            i += numLocations;
 
+            // read journies 
+            var journies = new List<Tuple<Location, Location>>();
+            for (int j = i; j <= i; j++)
+            {
+                string[] tofrom = totalLines[j].Split(' ');
+                Location to = locations.Find(l => l.Name == tofrom[0]);
+                Location from = locations.Find(l => l.Name == tofrom[1]);
+
+                journies.Add(new Tuple<Location, Location>(to, from));
+            }
+
+            i += 1;
+
+            // read hyperloop connections
+            var connections = new List<Tuple<Location, Location>>();
+            for (int j = i; j <= i; j++)
+            {
+                string[] tofrom = totalLines[j].Split(' ');
+                Location to = locations.Find(l => l.Name == tofrom[0]);
+                Location from = locations.Find(l => l.Name == tofrom[1]);
+
+                // mark as stop point
+                to.IsStop = true;
+                from.IsStop = true;
+
+                connections.Add(new Tuple<Location, Location>(to, from));
+            }
+
+            i += 1;
+            
             // assert
-            if (num != list.Count)
+            if (numLocations != locations.Count)
             {
                 throw new Exception("Number of Locations does not match.");
             }
 
-            return new Tuple<List<Location>, Tuple<Location, Location>>(list, new Tuple<Location, Location>(to, from));
+            return new Tuple<List<Location>, Tuple<Location, Location>, Tuple<Location, Location>>(locations, journies[0], connections[0]);
         }
 
         public static int RoundNearest(double n)
