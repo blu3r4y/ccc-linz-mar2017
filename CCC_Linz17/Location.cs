@@ -29,7 +29,7 @@ namespace CCC_Linz17
         public int TravelTimeToWithoutStops(Location location)
         {
             double distance = DistanceTo(location);
-            return (int)Math.Round(distance/Speed);
+            return Utils.RoundNearest(distance/Speed);
         }
     }
 }

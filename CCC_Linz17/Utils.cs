@@ -8,7 +8,7 @@ using MathNet.Spatial.Euclidean;
 
 namespace CCC_Linz17
 {
-    public static class InputReader
+    public static class Utils
     {
         public static Tuple<List<Location>, Tuple<Location, Location>> Read(string path)
         {
@@ -42,6 +42,11 @@ namespace CCC_Linz17
             }
 
             return new Tuple<List<Location>, Tuple<Location, Location>>(list, new Tuple<Location, Location>(to, from));
+        }
+
+        public static int RoundNearest(double n)
+        {
+            return (int) Math.Round(n);
         }
     }
 }
