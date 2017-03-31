@@ -22,18 +22,46 @@ namespace CCC_Linz17
             Time = time;
         }
 
-        public int HyperloopTime(List<Location> pipe)
+        public int HyperloopTime(List<List<Location>> pipes, Location hub)
         {
-            Location closestStart = Location.ClosestTo(Start, pipe);
-            Location closestEnd = Location.ClosestTo(End, pipe);
+            List<Location> allPipes = pipes.SelectMany(p => p).Distinct().ToList();
 
-            double walktime1 = Start.TravelTimeTo(closestStart, Location.SpeedWalk);
-            double traveltime = closestStart.TravelTimeToWithStops(closestEnd, pipe, Location.SpeedHyperloop);
-            double walktime2 = closestEnd.TravelTimeTo(End, Location.SpeedWalk);
+            // stops
+            Location closestStart = Location.ClosestTo(Start, allPipes);
+            Location closestEnd = Location.ClosestTo(End, allPipes);
 
-            int result = Utils.RoundNearest(walktime1 + walktime2 + traveltime);
+            // pipe index
+            int startPipe = pipes.FindIndex(pipelist => pipelist.Contains(closestStart));
+            int endPipe = pipes.FindIndex(pipelist => pipelist.Contains(closestEnd));
 
-            return result;
+            List<Location> startPipeList = pipes[startPipe];
+            List<Location> endPipeList = pipes[endPipe];
+
+            if (startPipe != endPipe)
+            {
+                double walktime1 = Start.TravelTimeTo(closestStart, Location.SpeedWalk);
+                double traveltime1 = closestStart.TravelTimeToWithStops(hub, startPipeList, Location.SpeedHyperloop);
+                double traveltime2 = hub.TravelTimeToWithStops(closestEnd, endPipeList, Location.SpeedHyperloop);
+                double walktime2 = closestEnd.TravelTimeTo(End, Location.SpeedWalk);
+
+                double changeTime = (closestStart != hub && closestEnd != hub) ? Location.ChangeTime : 0;
+
+                int result = Utils.RoundNearest(walktime1 + walktime2 + traveltime1 + traveltime2 + changeTime);
+
+                return result;
+            }
+            else
+            {
+                List<Location> singlePipe = pipes[startPipe];
+
+                double walktime1 = Start.TravelTimeTo(closestStart, Location.SpeedWalk);
+                double traveltime = closestStart.TravelTimeToWithStops(closestEnd, singlePipe, Location.SpeedHyperloop);
+                double walktime2 = closestEnd.TravelTimeTo(End, Location.SpeedWalk);
+
+                int result = Utils.RoundNearest(walktime1 + walktime2 + traveltime);
+
+                return result;
+            }
         }
     }
 }

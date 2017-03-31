@@ -13,56 +13,33 @@ namespace CCC_Linz17
     internal class Program
     {
         public static string DataPath = @"C:\data\Dropbox\Projekte\Code\CCC_Linz17\Data\";
-        public static string LevelPath = Path.Combine(DataPath, @"level6\");
+        public static string LevelPath = Path.Combine(DataPath, @"level7\");
 
         static void Main(string[] args)
         {
-            Console.WriteLine(doLevel6("level6-4.txt"));
+            Console.WriteLine(doLevel6("level7-eg.txt"));
 
             for (int i = 1; i <= 4; i++)
             {
-                // Console.WriteLine(doLevel6($"level6-{i}.txt"));
+                Console.WriteLine(doLevel6($"level7-{i}.txt"));
             }
 
             Console.Read();
         }
 
-        static string doLevel6(string fileName)
+        static int doLevel6(string fileName)
         {
             Utils.Input data = Utils.Read(Path.Combine(LevelPath, fileName));
 
             List<Location> locations = data.Locations;
             List<Journey> journies = data.Journies;
-            // List<Location>  pipe = data.HyperloopConnections;
-            int n = data.N; // num faster
-            int d = data.D; // max len
+            List<List<Location>>  pipes = data.Pipes;
+            Location hub = data.Hub;
 
-
-
-            for (int x = 0; x < 8; x++)
-            {
-                Thread t = new Thread(() =>
-                {
-                    Random rnd = new Random();
-                    while (true)
-                    {
-                        int numStops = Math.Min(rnd.Next(1, 100 + 1), locations.Count);
-
-                        var rndList = randomList(rnd, 0, locations.Count, numStops);
-                        List<Location> pipe = rndList.Select(i => locations[i]).ToList();
-
-                        if (check(journies, pipe, n, d)) break;
-                    }
-                    
-                });
-
-                t.Start();
-            }
-            
-
-            return "Started.";
+            return Utils.RoundNearest(journies[0].HyperloopTime(pipes, hub));
         }
 
+        /*
         public static IEnumerable<int> randomList(Random rnd, int min, int maxEx, int n)
         {
             HashSet<int> rndList = new HashSet<int>();
@@ -116,6 +93,6 @@ namespace CCC_Linz17
             }
 
             return sum;
-        }
+        }*/
     }
 }

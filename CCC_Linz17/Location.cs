@@ -17,6 +17,7 @@ namespace CCC_Linz17
         public static double SpeedWalk = 15;
 
         public static int StopTime = 200;
+        public static int ChangeTime = 300;
 
         public string Name;
         public Point2D Position;

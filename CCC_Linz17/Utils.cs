@@ -16,18 +16,16 @@ namespace CCC_Linz17
         {
             public List<Location> Locations;
             public List<Journey> Journies;
-            public List<Location> HyperloopConnections;
-            public int N;
-            public int D;
+            public List<List<Location>> Pipes;
+            public Location Hub;
 
 
-            public Input(List<Location> locations, List<Journey> journies, List<Location> hyperloopConnections, int n, int d)
+            public Input(List<Location> locations, List<Journey> journies, List<List<Location>> pipes, Location hub)
             {
                 Locations = locations;
                 Journies = journies;
-                HyperloopConnections = hyperloopConnections;
-                N = n;
-                D = d;
+                Pipes = pipes;
+                Hub = hub;
             }
         }
 
@@ -56,9 +54,9 @@ namespace CCC_Linz17
 
             i += numLocations;
 
-            int numJournies = int.Parse(totalLines[i]);
+            int numJournies = 1; // int.Parse(totalLines[i]);
 
-            i++;
+            // i++;
 
             // read journies 
             var journies = new List<Journey>();
@@ -67,32 +65,40 @@ namespace CCC_Linz17
                 string[] tofrom = totalLines[j].Split(' ');
                 Location to = locations.Find(l => l.Name == tofrom[0]);
                 Location from = locations.Find(l => l.Name == tofrom[1]);
-                int time = int.Parse(tofrom[2]);
+                // int time = int.Parse(tofrom[2]);
 
-                journies.Add(new Journey(to, from, time));
+                journies.Add(new Journey(to, from, 0));
             }
 
             i += numJournies;
 
-
-            int n = int.Parse(totalLines[i]);
-            i++;
-            int d = int.Parse(totalLines[i]);
+            Location hub = locations.Find(l => l.Name == totalLines[i]); ;
             i++;
 
-            /*
+
+            int numPipes = int.Parse(totalLines[i]);
+            i++;
+
             // read hyperloop connections
-            var connections = new List<Location>();
-            string[] connStr = totalLines[i].Split(' ');
-
-            for (int j = 1; j < connStr.Length; j++)
+            var connections = new List<List<Location>>();
+            for (int j = i; j < i + numPipes; j++)
             {
-                Location loc = locations.Find(l => l.Name == connStr[j]);
-                loc.IsStop = true;
-                connections.Add(loc);
-            }*/
+                var pipe = new List<Location>();
 
-            /*for (int j = i; j <= i; j++)
+                string[] connStr = totalLines[j].Split(' ');
+                for (int s = 1; s < connStr.Length; s++)
+                {
+                    Location loc = locations.Find(l => l.Name == connStr[s]);
+                    loc.IsStop = true;
+                    pipe.Add(loc);
+                }
+
+                connections.Add(pipe);
+            }
+                
+            /*
+            var connections = new List<Location>();
+            for (int j = i; j <= i; j++)
             {
                 string[] tofrom = totalLines[j].Split(' ');
                 Location to = locations.Find(l => l.Name == tofrom[0]);
@@ -102,8 +108,9 @@ namespace CCC_Linz17
                 to.IsStop = true;
                 from.IsStop = true;
 
-                connections.Add(new Tuple<Location, Location>(to, from));
-            }*/
+                connections.Add(new List<Location>(to, from));
+            }
+            */
 
             i += 1;
 
@@ -116,7 +123,7 @@ namespace CCC_Linz17
                 throw new Exception("Number of Locations does not match.");
             }
 
-            Singleton = new Input(locations, journies, null, n, d);
+            Singleton = new Input(locations, journies, connections, hub);
             return Singleton;
         }
 
