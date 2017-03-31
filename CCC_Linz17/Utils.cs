@@ -18,11 +18,14 @@ namespace CCC_Linz17
             public List<Journey> Journies;
             public Tuple<Location, Location> HyperloopConnection;
 
-            public Input(List<Location> locations, List<Journey> journies, Tuple<Location, Location> hyperloopConnection)
+            public int Nfaster;
+
+            public Input(List<Location> locations, List<Journey> journies, Tuple<Location, Location> hyperloopConnection, int nfaster)
             {
                 Locations = locations;
                 Journies = journies;
                 HyperloopConnection = hyperloopConnection;
+                Nfaster = nfaster;
             }
         }
 
@@ -68,7 +71,7 @@ namespace CCC_Linz17
             }
 
             i += numJournies;
-
+            /*
             // read hyperloop connections
             var connections = new List<Tuple<Location, Location>>();
             for (int j = i; j <= i; j++)
@@ -84,15 +87,18 @@ namespace CCC_Linz17
                 connections.Add(new Tuple<Location, Location>(to, from));
             }
 
-            i += 1;
-            
+            i += 1;*/
+
+            int nFaster = int.Parse(totalLines[i]);
+            i++;
+
             // assert
             if (numLocations != locations.Count)
             {
                 throw new Exception("Number of Locations does not match.");
             }
 
-            Singleton = new Input(locations, journies, connections[0]);
+            Singleton = new Input(locations, journies, null, nFaster);
             return Singleton;
         }
 
