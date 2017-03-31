@@ -16,10 +16,11 @@ namespace CCC_Linz17
 
         static void Main(string[] args)
         {
-            Console.WriteLine("1:" + doLevel2("level2-1.txt"));
-            Console.WriteLine("2:" + doLevel2("level2-2.txt"));
-            Console.WriteLine("3:" + doLevel2("level2-3.txt"));
-            Console.WriteLine("4:" + doLevel2("level2-4.txt"));
+            for (var i = 1; i <= 4; i++)
+            {
+                Console.WriteLine(doLevel2($"level2-{i}.txt"));
+            }
+
             Console.Read();
         }
 
