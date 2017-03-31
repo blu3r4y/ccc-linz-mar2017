@@ -22,13 +22,13 @@ namespace CCC_Linz17
             Time = time;
         }
 
-        public int HyperloopTime(List<Location> connections)
+        public int HyperloopTime(List<Location> pipe)
         {
-            Location closestStart = Location.ClosestTo(Start, connections);
-            Location closestEnd = Location.ClosestTo(End, connections);
+            Location closestStart = Location.ClosestTo(Start, pipe);
+            Location closestEnd = Location.ClosestTo(End, pipe);
 
             double walktime1 = Start.TravelTimeTo(closestStart, Location.SpeedWalk);
-            double traveltime = closestStart.TravelTimeToWithStops(closestEnd, connections, Location.SpeedHyperloop);
+            double traveltime = closestStart.TravelTimeToWithStops(closestEnd, pipe, Location.SpeedHyperloop);
             double walktime2 = closestEnd.TravelTimeTo(End, Location.SpeedWalk);
 
             int result = Utils.RoundNearest(walktime1 + walktime2 + traveltime);

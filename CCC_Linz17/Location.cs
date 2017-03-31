@@ -34,6 +34,22 @@ namespace CCC_Linz17
             return Position.DistanceTo(location.Position);
         }
 
+        public static double ListDistance(List<Location> locations)
+        {
+            double sum = 0;
+            Location pre = locations[0];
+
+            foreach (Location loc in locations)
+            {
+                double dist = pre.DistanceTo(loc);
+                sum += dist;
+
+                pre = loc;
+            }
+
+            return sum;
+        }
+
         public double TravelTimeTo(Location location, double speed)
         {
             if (this == location) return 0;
@@ -49,12 +65,12 @@ namespace CCC_Linz17
             return TravelTimeTo(location, speed) + StopTime;
         }
 
-        public double TravelTimeToWithStops(Location location, List<Location> fullConnections, double speed)
+        public double TravelTimeToWithStops(Location location, List<Location> pipe, double speed)
         {
-            // fullConnections: sorted list of connected stops
+            // pipe: sorted list of connected stops
 
-            int startIndex = fullConnections.FindIndex(l => l == this);
-            int endIndex = fullConnections.FindIndex(l => l == location);
+            int startIndex = pipe.FindIndex(l => l == this);
+            int endIndex = pipe.FindIndex(l => l == location);
 
             bool inverse = startIndex > endIndex;
             if (inverse)
@@ -70,7 +86,7 @@ namespace CCC_Linz17
 
             for (int i = startIndex; i <= endIndex; i++)
             {
-                Location stop = fullConnections[i];
+                Location stop = pipe[i];
 
                 double dist = pre.TravelTimeToWithStops(stop, speed);
                 sum += dist;

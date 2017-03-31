@@ -17,13 +17,17 @@ namespace CCC_Linz17
             public List<Location> Locations;
             public List<Journey> Journies;
             public List<Location> HyperloopConnections;
-           
+            public int N;
+            public int D;
 
-            public Input(List<Location> locations, List<Journey> journies, List<Location> hyperloopConnections)
+
+            public Input(List<Location> locations, List<Journey> journies, List<Location> hyperloopConnections, int n, int d)
             {
                 Locations = locations;
                 Journies = journies;
                 HyperloopConnections = hyperloopConnections;
+                N = n;
+                D = d;
             }
         }
 
@@ -52,9 +56,9 @@ namespace CCC_Linz17
 
             i += numLocations;
 
-            int numJournies = 1; // int.Parse(totalLines[i]);
+            int numJournies = int.Parse(totalLines[i]);
 
-            //i++;
+            i++;
 
             // read journies 
             var journies = new List<Journey>();
@@ -63,13 +67,20 @@ namespace CCC_Linz17
                 string[] tofrom = totalLines[j].Split(' ');
                 Location to = locations.Find(l => l.Name == tofrom[0]);
                 Location from = locations.Find(l => l.Name == tofrom[1]);
-                //int time = int.Parse(tofrom[2]);
+                int time = int.Parse(tofrom[2]);
 
-                journies.Add(new Journey(to, from, 0));
+                journies.Add(new Journey(to, from, time));
             }
 
             i += numJournies;
-            
+
+
+            int n = int.Parse(totalLines[i]);
+            i++;
+            int d = int.Parse(totalLines[i]);
+            i++;
+
+            /*
             // read hyperloop connections
             var connections = new List<Location>();
             string[] connStr = totalLines[i].Split(' ');
@@ -79,7 +90,7 @@ namespace CCC_Linz17
                 Location loc = locations.Find(l => l.Name == connStr[j]);
                 loc.IsStop = true;
                 connections.Add(loc);
-            }
+            }*/
 
             /*for (int j = i; j <= i; j++)
             {
@@ -105,13 +116,18 @@ namespace CCC_Linz17
                 throw new Exception("Number of Locations does not match.");
             }
 
-            Singleton = new Input(locations, journies, connections);
+            Singleton = new Input(locations, journies, null, n, d);
             return Singleton;
         }
 
         public static int RoundNearest(double n)
         {
             return (int) Math.Round(n);
+        }
+
+        public static string LocToStr(List<Location> list)
+        {
+            return list.Count + " " + string.Join(" ", list.Select(l => l.Name));
         }
     }
 }
