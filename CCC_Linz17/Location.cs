@@ -36,13 +36,49 @@ namespace CCC_Linz17
 
         public double TravelTimeTo(Location location, double speed)
         {
+            if (this == location) return 0;
+
             double distance = DistanceTo(location);
             return distance / speed;
         }
 
         public double TravelTimeToWithStops(Location location, double speed)
         {
+            if (this == location) return 0;
+
             return TravelTimeTo(location, speed) + StopTime;
+        }
+
+        public double TravelTimeToWithStops(Location location, List<Location> fullConnections, double speed)
+        {
+            // fullConnections: sorted list of connected stops
+
+            int startIndex = fullConnections.FindIndex(l => l == this);
+            int endIndex = fullConnections.FindIndex(l => l == location);
+
+            bool inverse = startIndex > endIndex;
+            if (inverse)
+            {
+                int tmp = startIndex;
+                startIndex = endIndex;
+                endIndex = tmp;
+            }
+
+            double sum = 0;
+
+            Location pre = !inverse ? this : location;
+
+            for (int i = startIndex; i <= endIndex; i++)
+            {
+                Location stop = fullConnections[i];
+
+                double dist = pre.TravelTimeToWithStops(stop, speed);
+                sum += dist;
+
+                pre = stop;
+            }
+
+            return sum;
         }
 
         public static Location ClosestTo(Location start, List<Location> locations)

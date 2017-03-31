@@ -7,30 +7,29 @@ using System.Threading.Tasks;
 
 namespace CCC_Linz17
 {
-    [DebuggerDisplay("{To} -> {From} in {Time}")]
+    [DebuggerDisplay("{End} -> {Start} in {Time}")]
     public class Journey
     {
-        public Location To;
-        public Location From;
+        public Location End;
+        public Location Start;
 
         public int Time;
 
-        public Journey(Location to, Location from, int time)
+        public Journey(Location start, Location end, int time)
         {
-            To = to;
-            From = from;
+            Start = start;
+            End = end;
             Time = time;
         }
 
-        public int HyperloopTime(Tuple<Location, Location> connection)
+        public int HyperloopTime(List<Location> connections)
         {
-            Location closestStart = Location.ClosestTo(To,
-                new List<Location> { connection.Item1, connection.Item2 });
-            Location closestEnd = closestStart == connection.Item1 ? connection.Item2 : connection.Item1;
+            Location closestStart = Location.ClosestTo(Start, connections);
+            Location closestEnd = Location.ClosestTo(End, connections);
 
-            double walktime1 = To.TravelTimeTo(closestStart, Location.SpeedWalk);
-            double traveltime = closestStart.TravelTimeToWithStops(closestEnd, Location.SpeedHyperloop);
-            double walktime2 = closestEnd.TravelTimeTo(From, Location.SpeedWalk);
+            double walktime1 = Start.TravelTimeTo(closestStart, Location.SpeedWalk);
+            double traveltime = closestStart.TravelTimeToWithStops(closestEnd, connections, Location.SpeedHyperloop);
+            double walktime2 = closestEnd.TravelTimeTo(End, Location.SpeedWalk);
 
             int result = Utils.RoundNearest(walktime1 + walktime2 + traveltime);
 

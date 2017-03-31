@@ -12,48 +12,34 @@ namespace CCC_Linz17
     internal class Program
     {
         public static string DataPath = @"C:\data\Dropbox\Projekte\Code\CCC_Linz17\Data\";
-        public static string LevelPath = Path.Combine(DataPath, @"level4\");
+        public static string LevelPath = Path.Combine(DataPath, @"level5\");
 
         static void Main(string[] args)
         {
-            Console.WriteLine(doLevel4("level4-eg.txt"));
+            Console.WriteLine(doLevel4("level5-eg.txt"));
 
             for (int i = 1; i <= 4; i++)
             {
-                Console.WriteLine(doLevel4($"level4-{i}.txt"));
+                Console.WriteLine(doLevel4($"level5-{i}.txt"));
             }
 
             Console.Read();
         }
 
-        static string doLevel4(string fileName)
+        static int doLevel4(string fileName)
         {
             Utils.Input data = Utils.Read(Path.Combine(LevelPath, fileName));
 
             List<Location> locations = data.Locations;
             List<Journey> journey = data.Journies;
-            Tuple<Location, Location> connection = data.HyperloopConnection;
-            int nfaster = data.Nfaster;
+            List<Location>  connections = data.HyperloopConnections;
 
-            foreach (Location a in locations)
-            {
-                foreach (Location b in locations)
-                {
-                    if (a != b)
-                    {
-                        int isFaster = numFaster(journey, new Tuple<Location, Location>(a, b));
-                        if (isFaster >= nfaster)
-                        {
-                            return a.Name + " " + b.Name;
-                        }
-                    }
-                }
-            }
+            
 
-            return null;
+            return Utils.RoundNearest(journey[0].HyperloopTime(connections));
         }
 
-        public static int numFaster(List<Journey> journies, Tuple<Location, Location> connection)
+        /*public static int numFaster(List<Journey> journies, Tuple<Location, Location> connection)
         {
             int sum = 0;
             foreach (Journey jour in journies)
@@ -63,6 +49,6 @@ namespace CCC_Linz17
             }
 
             return sum;
-        }
+        }*/
     }
 }
