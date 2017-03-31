@@ -18,14 +18,17 @@ namespace CCC_Linz17
             public List<Journey> Journies;
             public List<List<Location>> Pipes;
             public Location Hub;
+            public int N;
+            public int D;
 
-
-            public Input(List<Location> locations, List<Journey> journies, List<List<Location>> pipes, Location hub)
+            public Input(List<Location> locations, List<Journey> journies, List<List<Location>> pipes, Location hub, int n, int d)
             {
                 Locations = locations;
                 Journies = journies;
                 Pipes = pipes;
                 Hub = hub;
+                N = n;
+                D = d;
             }
         }
 
@@ -54,9 +57,9 @@ namespace CCC_Linz17
 
             i += numLocations;
 
-            int numJournies = 1; // int.Parse(totalLines[i]);
+            int numJournies = int.Parse(totalLines[i]);
 
-            // i++;
+            i++;
 
             // read journies 
             var journies = new List<Journey>();
@@ -65,17 +68,23 @@ namespace CCC_Linz17
                 string[] tofrom = totalLines[j].Split(' ');
                 Location to = locations.Find(l => l.Name == tofrom[0]);
                 Location from = locations.Find(l => l.Name == tofrom[1]);
-                // int time = int.Parse(tofrom[2]);
+                int time = int.Parse(tofrom[2]);
 
                 journies.Add(new Journey(to, from, 0));
             }
 
             i += numJournies;
 
+            // hub name
             Location hub = locations.Find(l => l.Name == totalLines[i]); ;
             i++;
 
+            int n = int.Parse(totalLines[i]);
+            i++;
+            int d = int.Parse(totalLines[i]);
+            i++;
 
+            /*
             int numPipes = int.Parse(totalLines[i]);
             i++;
 
@@ -94,8 +103,8 @@ namespace CCC_Linz17
                 }
 
                 connections.Add(pipe);
-            }
-                
+            }*/
+
             /*
             var connections = new List<Location>();
             for (int j = i; j <= i; j++)
@@ -123,7 +132,7 @@ namespace CCC_Linz17
                 throw new Exception("Number of Locations does not match.");
             }
 
-            Singleton = new Input(locations, journies, connections, hub);
+            Singleton = new Input(locations, journies, null, hub, n, d);
             return Singleton;
         }
 
@@ -135,6 +144,11 @@ namespace CCC_Linz17
         public static string LocToStr(List<Location> list)
         {
             return list.Count + " " + string.Join(" ", list.Select(l => l.Name));
+        }
+
+        public static string LocToStr(List<List<Location>> list)
+        {
+            return list.Count + " " + string.Join(" ", list.Select(LocToStr));
         }
     }
 }
