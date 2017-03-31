@@ -10,7 +10,23 @@ namespace CCC_Linz17
 {
     public static class Utils
     {
-        public static Tuple<List<Location>, Tuple<Location, Location>, Tuple<Location, Location>> Read(string path)
+        public static Input Singleton;
+
+        public class Input
+        {
+            public List<Location> Locations;
+            public List<Journey> Journies;
+            public Tuple<Location, Location> HyperloopConnection;
+
+            public Input(List<Location> locations, List<Journey> journies, Tuple<Location, Location> hyperloopConnection)
+            {
+                Locations = locations;
+                Journies = journies;
+                HyperloopConnection = hyperloopConnection;
+            }
+        }
+
+        public static Input Read(string path)
         {
             int i = 0;
 
@@ -34,19 +50,24 @@ namespace CCC_Linz17
             }
 
             i += numLocations;
+            
+            int numJournies = int.Parse(totalLines[i]);
+
+            i++;
 
             // read journies 
-            var journies = new List<Tuple<Location, Location>>();
-            for (int j = i; j <= i; j++)
+            var journies = new List<Journey>();
+            for (int j = i; j < i + numJournies; j++)
             {
                 string[] tofrom = totalLines[j].Split(' ');
                 Location to = locations.Find(l => l.Name == tofrom[0]);
                 Location from = locations.Find(l => l.Name == tofrom[1]);
+                int time = int.Parse(tofrom[2]);
 
-                journies.Add(new Tuple<Location, Location>(to, from));
+                journies.Add(new Journey(to, from, time));
             }
 
-            i += 1;
+            i += numJournies;
 
             // read hyperloop connections
             var connections = new List<Tuple<Location, Location>>();
@@ -71,7 +92,8 @@ namespace CCC_Linz17
                 throw new Exception("Number of Locations does not match.");
             }
 
-            return new Tuple<List<Location>, Tuple<Location, Location>, Tuple<Location, Location>>(locations, journies[0], connections[0]);
+            Singleton = new Input(locations, journies, connections[0]);
+            return Singleton;
         }
 
         public static int RoundNearest(double n)

@@ -60,6 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Journey.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Location.cs" />
     <Compile Include="Program.cs" />
